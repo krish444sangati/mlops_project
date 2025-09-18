@@ -17,8 +17,7 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
 
-        container:
-            image: google/cloud-sdk:latest
+        
 
         steps:
             - name: Checkout Repository

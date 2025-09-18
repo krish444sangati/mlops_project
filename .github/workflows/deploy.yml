@@ -42,7 +42,16 @@ jobs:
 
       - name: Install gke-gcloud-auth-plugin
         run: |
-          # Use apt-get instead of gcloud components install as suggested by the error
+          # Add the Google Cloud CLI repository to the apt-get sources list
+          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+          
+          # Add the Google Cloud public key
+          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+          
+          # Update the package list
+          sudo apt-get update
+          
+          # Now, install the plugin
           sudo apt-get install google-cloud-cli-gke-gcloud-auth-plugin
 
       - name: Deploying to Kubernetes

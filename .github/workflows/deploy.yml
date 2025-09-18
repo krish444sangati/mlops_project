@@ -17,39 +17,35 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
 
-        container:
-            image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
-
-
         steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v2
+           - name: Checkout Repository
+             uses: actions/checkout@v2
 
-            - name: Authenticate with Google cloud
-              uses: google-github-actions/auth@v1
-              with:
-                credentials_json: ${{ secrets.GCP_SERVICEACCOUNT_KEY }}
+           - name: Authenticate with Google Cloud
+             uses: google-github-actions/auth@v1
+             with:
+              credentials_json: ${{ secrets.GCP_SERVICEACCOUNT_KEY }}
 
-            - name: Configure GCloud
-              run: |
-                gcloud config set project $PROJECT_ID
-                gcloud auth configure-docker us-central1-docker.pkg.dev
-            
-            - name: Building and Pushing Image
-              run: |
-                docker build -t $IMAGE:$GITHUB_SHA .
-                docker push $IMAGE:$GITHUB_SHA
+           - name: Configure Docker for Artifact Registry
+             run: |
+               gcloud config set project $PROJECT_ID
+               gcloud auth configure-docker us-central1-docker.pkg.dev
 
-            - name: GKE Configuration
-              run: |
-                gcloud container clusters get-credentials $GKE_CLUSTER --region $GKE_REGION --project $PROJECT_ID
+           - name: Build & Push Docker image
+             run: |
+              docker build -t $IMAGE:$GITHUB_SHA .
+              docker push $IMAGE:$GITHUB_SHA
 
-            - name: Deploying to Kubernetes
-              run: |
-                kubectl apply -f kubernetes-deployment.yaml
-                kubectl set image deployment/$DEPLOYMENT_NAME $DEPLOYMENT_NAME=$IMAGE:$GITHUB_SHA
-            
-            
+           - name: Install GKE Auth Plugin
+             run: |
+              sudo apt-get update
+              sudo apt-get install -y google-cloud-cli-gke-gcloud-auth-plugin
 
+           - name: GKE Configuration
+             run: |
+              gcloud container clusters get-credentials $GKE_CLUSTER --region $GKE_REGION --project $PROJECT_ID
 
-
+           - name: Deploy to Kubernetes
+             run: |
+              kubectl apply -f kubernetes-deployment.yaml
+              kubectl set image deployment/$DEPLOYMENT_NAME $DEPLOYMENT_NAME=$IMAGE:$GITHUB_SHA

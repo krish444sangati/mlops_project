@@ -53,8 +53,8 @@ class Data_Processing():
             joblib.dump(x_test , os.path.join(self.processed_path , "x_test.pkl"))
             joblib.dump(y_train , os.path.join(self.processed_path , "y_train.pkl"))
             joblib.dump(y_test , os.path.join(self.processed_path , "y_test.pkl"))
-            # print(x_train.head())  
-            # print(x_test.shape)   
+            print(x_train.head())  
+            print(x_test.shape)   
 
             logger.info("Files saved sucesfully for Data processing step..")
         

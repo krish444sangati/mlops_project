@@ -10,8 +10,8 @@ env:
     GKE_CLUSTER: "autopilot-cluster-1"
     GKE_REGION: "us-central1"
     DEPLOYMENT_NAME: "mlops-app"
-    REPOSITORY: "us-central1-docker.pkg.dev/mlops1-472409/ml-repo"
-    IMAGE: "us-central1-docker.pkg.dev/mlops1-472409/ml-repo/mlops-app"
+    REPOSITORY: "us-central1-docker.pkg.dev/gcpproject-474009/mlops"
+    IMAGE: "us-central1-docker.pkg.dev/gcpproject-474009/mlops/mlops-app"
 
 jobs:
   build-and-deploy:
